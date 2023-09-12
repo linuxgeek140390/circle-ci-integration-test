@@ -1,0 +1,38 @@
+version: 2.1
+jobs:
+  create-ec2-instance:
+    docker:
+      - image: cimg/aws  # AWS CLI is pre-installed in this image
+
+    steps:
+      - checkout  # Checkout your source code
+
+      - run:
+          name: Create EC2 Instance on Specific Branches
+          command: |
+            # Define the branches where you want to create the EC2 instance
+            ALLOWED_BRANCHES=("main" "dev" "qa" "stable")
+
+            # Get the current branch name
+            CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+
+            # Check if the current branch is in the list of allowed branches
+            if [[ " ${ALLOWED_BRANCHES[@]} " =~ " $CURRENT_BRANCH " ]]; then
+              chmod +x ec2.sh && ./ec2.sh
+              
+            else
+              echo "Skipping EC2 instance creation. Current branch ($CURRENT_BRANCH) is not in the list of allowed branches."
+            fi
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - create-ec2-instance:
+          filters:
+            branches:
+              only:
+                - main
+                - dev
+                - qa
+                - stable
