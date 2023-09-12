@@ -6,12 +6,8 @@ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip
 unzip awscliv2.zip
 sudo ./aws/install
 
-
-
-full_ref="$GITHUB_REF"
-branch_name=${full_ref##*/}
-echo "We are on branch $branch_name"
-env="$branch_name"
+echo "We are on branch $CIRCLE_BRANCH"
+env="$CIRCLE_BRANCH"
 echo "This execution will create ec2 instance for $env environment"
 aws ec2 run-instances --image-id ami-0b2b4f610e654d9ac --count 1 --instance-type t2.micro --key-name circleci --security-group-ids sg-0fe321f40b7431450 --subnet-id subnet-09e865d82bb0c018d --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value={$env}}]' --region us-west-2
 

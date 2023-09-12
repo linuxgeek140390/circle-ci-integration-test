@@ -22,16 +22,20 @@ jobs:
       - checkout  # Checkout your source code
 
       - run:
+          name: Get current branch name
+          command: echo $CIRCLE_BRANCH
+
+      - run:
           name: Create EC2 Instance on Specific Branches
           command: |
             # Define the branches where you want to create the EC2 instance
             ALLOWED_BRANCHES=("main" "dev" "qa" "stable")
 
             # Get the current branch name
-            #CIRCLECI_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+            #CIRCLE_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
             # Check if the current branch is in the list of allowed branches
-            if [[ " ${ALLOWED_BRANCHES[@]} " =~ " $CIRCLECI_BRANCH " ]]; then
+            if [[ " ${ALLOWED_BRANCHES[@]} " =~ " $CIRCLE_BRANCH " ]]; then
               chmod +x ec2.sh && ./ec2.sh
               
             else
