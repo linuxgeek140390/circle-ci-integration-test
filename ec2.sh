@@ -1,6 +1,10 @@
 #!/bin/bash
 echo "We are going to create an ec2 instance ...."
 region="us-west-2"
+echo "Install aws cli ..."
+apt install awscli
+aws --version
+
 
 
 full_ref="$GITHUB_REF"
