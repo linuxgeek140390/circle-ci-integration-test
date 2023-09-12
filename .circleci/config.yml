@@ -28,14 +28,14 @@ jobs:
             ALLOWED_BRANCHES=("main" "dev" "qa" "stable")
 
             # Get the current branch name
-            CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+            #CIRCLECI_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
             # Check if the current branch is in the list of allowed branches
-            if [[ " ${ALLOWED_BRANCHES[@]} " =~ " $CURRENT_BRANCH " ]]; then
+            if [[ " ${ALLOWED_BRANCHES[@]} " =~ " $CIRCLECI_BRANCH " ]]; then
               chmod +x ec2.sh && ./ec2.sh
               
             else
-              echo "Skipping EC2 instance creation. Current branch ($CURRENT_BRANCH) is not in the list of allowed branches."
+              echo "Skipping EC2 instance creation. Current branch ($CIRCLECI_BRANCH) is not in the list of allowed branches."
             fi
 
 workflows:
