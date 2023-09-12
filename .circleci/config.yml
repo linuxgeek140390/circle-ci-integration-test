@@ -1,9 +1,23 @@
 version: 2.1
+orbs:
+  aws-cli: circleci/aws-cli@2.0.6
+commands:
+  setup-aws-cli:
+    steps:
+      - awscli/install
+      - run: aws --version
+    
 jobs:
+  aws-cli-cred-setup:
+    executor: aws-cli/default
+    steps:
+      - aws-cli/setup:
+          aws-access-key-id: $AWS_ACCESS_KEY_ID
+          aws-secret-access-key: $AWS_SECRET_ACCESS_KEY
+
   create-ec2-instance:
     docker:
-      - image: cimg/aws  # AWS CLI is pre-installed in this image
-
+      - image: cimg/base:stable # AWS CLI is pre-installed in this image
     steps:
       - checkout  # Checkout your source code
 
@@ -28,6 +42,8 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
+      - aws-cli-cred-setup:
+          context: aws
       - create-ec2-instance:
           filters:
             branches:
